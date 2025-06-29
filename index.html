@@ -4,6 +4,21 @@
     <title>PlanetBrick - Login</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
+        /* Banner Styles */
+    .server-alert {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #ff4d4d;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      font-family: Arial, sans-serif;
+      font-weight: bold;
+      z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
         /* Modern CSS Variables */
         :root {
             --primary: #4361ee;
@@ -215,6 +230,9 @@
     </style>
 </head>
 <body>
+    <div class="server-alert">
+    ⚠️ Server Issue: Your user and data will not be saved. We are currently working to fix this. When fixed, YOU WILL have to create a new account. 
+    </div>
     <div class="page-header">
         <h1>PlanetBrick</h1>
         <h4>Don't be fooled by the login/signup page! We are currently working to make this better :D</h4>
