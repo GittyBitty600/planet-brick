@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlanetBrick - Home</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>Polytoria</h1>
+            </div>
+
+            <div class="sidebar-user">
+                <div class="user-avatar" id="sidebar-avatar">👤</div>
+                <div class="user-info">
+                    <span class="username" id="sidebar-username">Username</span>
+                    <span class="user-coins" id="sidebar-coins">0 coins</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="home.html" class="nav-item active">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="profile.html" class="nav-item">
+                    <i class="fas fa-user"></i> Profile
+                </a>
+                <a href="users.html" class="nav-item">
+                    <i class="fas fa-users"></i> Users
+                </a>
+                <a href="forums.html" class="nav-item">
+                    <i class="fas fa-comments"></i> Forums
+                </a>
+                <a href="shop.html" class="nav-item">
+                    <i class="fas fa-shopping-bag"></i> Shop
+                </a>
+                <a href="admin.html" class="nav-item admin-item" id="admin-nav-item" style="display:none;">
+                    <i class="fas fa-shield-alt"></i> Admin
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content-header">
+                <h2>Dashboard</h2>
+                <div class="header-actions">
+                    <button class="header-btn" onclick="window.location.href='forums.html'">
+                        <i class="fas fa-plus"></i> New Post
+                    </button>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- Profile Card -->
+                <div class="dashboard-card profile-card">
+                    <div class="card-header">
+                        <h3>Your Profile</h3>
+                        <button class="card-action-btn" onclick="window.location.href='profile.html'">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                    </div>
+                    <div class="profile-content">
+                        <div class="profile-avatar" id="dashboard-avatar">👤</div>
+                        <div class="profile-details">
+                            <h4 id="dashboard-username">Username</h4>
+                            <div class="profile-stats">
+                                <div class="stat-item">
+                                    <i class="fas fa-coins"></i>
+                                    <span id="dashboard-coins">0</span> coins
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fas fa-comment"></i>
+                                    <span id="dashboard-posts">0</span> posts
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fas fa-user-friends"></i>
+                                    <span id="dashboard-friends">0</span> friends
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daily Bonus -->
+                <div class="dashboard-card bonus-card" id="daily-bonus-container" style="display:none;">
+                    <div class="card-header">
+                        <h3>Daily Reward</h3>
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <p>Claim your daily bonus now!</p>
+                    <button class="bonus-claim-btn" id="claim-bonus-btn" onclick="claimDailyBonus()">
+                        Claim 5 Coins
+                    </button>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="dashboard-card actions-card">
+                    <div class="card-header">
+                        <h3>Quick Actions</h3>
+                    </div>
+                    <div class="actions-grid">
+                        <button class="action-btn" onclick="window.location.href='forums.html'">
+                            <i class="fas fa-comment-dots"></i>
+                            <span>Create Post</span>
+                        </button>
+                        <button class="action-btn" onclick="window.location.href='users.html'">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Find Friends</span>
+                        </button>
+                        <button class="action-btn" onclick="window.location.href='shop.html'">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Visit Shop</span>
+                        </button>
+                        <button class="action-btn" onclick="window.location.href='profile.html'">
+                            <i class="fas fa-user-edit"></i>
+                            <span>Edit Profile</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="dashboard-card activity-card">
+                    <div class="card-header">
+                        <h3>Recent Activity</h3>
+                        <button class="card-action-btn" onclick="window.location.href='profile.html'">
+                            <i class="fas fa-history"></i> View All
+                        </button>
+                    </div>
+                    <div class="activity-list" id="recent-activity">
+                        <!-- Activity items will be added here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/coins.js"></script>
+    <script>
+        // Load user data
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if(!currentUser || checkBanStatus()) {
+            window.location.href = 'index.html';
+        } else {
+            // Set sidebar info
+            document.getElementById('sidebar-username').textContent = currentUser.username;
+            document.getElementById('sidebar-coins').textContent = `${currentUser.coins} coins`;
+            document.getElementById('sidebar-avatar').textContent = currentUser.avatar || '👤';
+
+            // Set dashboard info
+            document.getElementById('dashboard-username').textContent = currentUser.username;
+            document.getElementById('dashboard-avatar').textContent = currentUser.avatar || '👤';
+            document.getElementById('dashboard-coins').textContent = currentUser.coins;
+
+            // Count user's posts
+            const forumPosts = JSON.parse(localStorage.getItem('forumPosts')) || [];
+            const userPosts = forumPosts.filter(post => post.author === currentUser.username).length;
+            document.getElementById('dashboard-posts').textContent = userPosts;
+
+            // Temporary friends count
+            document.getElementById('dashboard-friends').textContent = '0';
+
+            // Show admin nav if admin
+            if(currentUser.isAdmin) {
+                document.getElementById('admin-nav-item').style.display = 'flex';
+            }
+
+            // Check for daily bonus
+            checkDailyBonus();
+
+            // Load recent activity
+            loadRecentActivity();
+        }
+
+        function loadRecentActivity() {
+            const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+            const userTransactions = transactions
+                .filter(t => t.username === currentUser.username)
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 5);
+
+            const activityList = document.getElementById('recent-activity');
+
+            if(userTransactions.length === 0) {
+                activityList.innerHTML = '<div class="empty-state">No recent activity</div>';
+                return;
+            }
+
+            activityList.innerHTML = userTransactions.map(t => `
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        ${t.amount > 0 ? '<i class="fas fa-coins"></i>' : '<i class="fas fa-exchange-alt"></i>'}
+                    </div>
+                    <div class="activity-details">
+                        <p class="activity-description">${t.reason}</p>
+                        <span class="activity-date">${new Date(t.date).toLocaleString()}</span>
+                    </div>
+                    <div class="activity-amount ${t.amount > 0 ? 'positive' : 'neutral'}">
+                        ${t.amount > 0 ? '+' : ''}${t.amount}
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>

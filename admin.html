@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PlanetBrick - Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Modern CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        /* Color Variables */
+        :root {
+            --primary: #FF4D00;
+            --primary-light: #FF7B33;
+            --dark: #1E1E1E;
+            --light: #F5F5F5;
+            --white: #FFFFFF;
+            --gray: #7D7D7D;
+            --success: #00C853;
+            --danger: #FF1744;
+        }
+
+        /* Base Styles */
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Layout */
+        .app-container {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--dark);
+            color: var(--white);
+            padding: 1.5rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .username {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .user-coins {
+            font-size: 0.75rem;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 6px;
+            color: var(--gray);
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--white);
+        }
+
+        .nav-item.active {
+            background: var(--primary);
+            color: var(--white);
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .content-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .header-btn {
+            padding: 0.5rem 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        /* Profile Header */
+        .profile-header {
+            display: flex;
+            gap: 2rem;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .avatar-container {
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .edit-avatar {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 36px;
+            height: 36px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-info h3 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .join-date {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--light);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        /* Profile Tabs */
+        .profile-tabs {
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .profile-tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Admin Controls */
+        .admin-controls {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+        }
+
+        .admin-controls h4 {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-group {
+            margin-bottom: 1rem;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .control-row {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .control-row input {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .control-row button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .update-btn {
+            background: var(--primary);
+        }
+
+        .ban-btn {
+            background: var(--danger);
+        }
+
+        .unban-btn {
+            background: var(--success);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                height: auto;
+                position: static;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-gamepad"></i>
+                <h1>Roblox Clone</h1>
+            </div>
+            <div class="user-card">
+                <div class="user-avatar" id="sidebar-avatar">👤</div>
+                <div class="user-info">
+                    <div class="username" id="sidebar-username">Username</div>
+                    <div class="user-coins" id="sidebar-coins">0 coins</div>
+                </div>
+            </div>
+            <nav class="nav-menu">
+                <a href="home.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+                <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+                <a href="users.html" class="nav-item"><i class="fas fa-users"></i><span>Users</span></a>
+                <a href="forums.html" class="nav-item"><i class="fas fa-comments"></i><span>Forums</span></a>
+                <a href="shop.html" class="nav-item"><i class="fas fa-shopping-bag"></i><span>Shop</span></a>
+                <a href="admin.html" class="nav-item active"><i class="fas fa-shield-alt"></i><span>Admin</span></a>
+            </nav>
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content-header">
+                <h2>Admin Dashboard</h2>
+            </div>
+
+            <div class="admin-sections">
+                <div class="admin-section" style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 1.5rem;">
+                    <h3>User Management</h3>
+                    <div class="search-box" style="margin: 1rem 0;">
+                        <input type="text" id="admin-user-search" placeholder="Search users..." style="padding: 0.5rem;">
+                        <button class="header-btn" onclick="adminSearchUsers()">Search</button>
+                    </div>
+                    <div id="admin-users-list"></div>
+                </div>
+
+                <div class="admin-section" style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 1.5rem;">
+                    <h3>Recent Activity</h3>
+                    <div id="recent-activity"></div>
+                </div>
+
+                <div class="admin-section" style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <h3>System Tools</h3>
+                    <button class="header-btn" onclick="backupData()">Backup All Data</button>
+                    <input type="file" id="restore-file" accept=".json" style="display: none;" onchange="restoreData(event)">
+                    <button class="header-btn" onclick="document.getElementById('restore-file').click()">Restore Data</button>
+                    <button class="header-btn" style="background: var(--danger);" onclick="resetAllData()">Reset All Data</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if(!currentUser || !currentUser.isAdmin || checkBanStatus()) {
+            window.location.href = 'index.html';
+        } else {
+            document.getElementById('sidebar-username').textContent = currentUser.username;
+            document.getElementById('sidebar-coins').textContent = `${currentUser.coins} coins`;
+            document.getElementById('sidebar-avatar').textContent = currentUser.avatar || '👤';
+
+            loadAdminUsers();
+            loadRecentActivity();
+        }
+    </script>
+</body>
+</html>
